@@ -1,7 +1,6 @@
 #include "scene.h"
 
 void Scene::setCamera(std::unique_ptr<Camera> camera){
-    std::cout <<"fajny rododendron" <<std::endl;
     this->c = std::move(camera);
 }
 

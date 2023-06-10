@@ -9,7 +9,7 @@ XmlParser::XmlParser(std::filesystem::path fileName){
         std::cout<<"success" << std::endl;
         // initialize root element:
         rootElement = doc.RootElement();
-        std::cout <<rootElement->Name()<<std::endl;
+        // std::cout <<rootElement->Name()<<std::endl;
         initCamera();
         initLight();
         initSurface();
@@ -244,7 +244,7 @@ void XmlParser::getPointLightElement(){
     double r{0}, g{0}, b{0},  x{0},  y{0},  z{0};
      if (result == tinyxml2::XML_SUCCESS && lightElement != nullptr) {
         PointLightElement = lightElement->FirstChildElement("point_light");
-        std::cout<<PointLightElement <<std::endl;
+        // std::cout<<PointLightElement <<std::endl;
         tinyxml2::XMLElement* colorElement{nullptr};
         tinyxml2::XMLElement* positionElement{nullptr};
         // std::cout<<PointLightElement->Value()<<std::endl;

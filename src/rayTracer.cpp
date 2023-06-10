@@ -23,7 +23,7 @@ void RayTracer::renderBlackObject(){
 
 
 void RayTracer::print(){
-    std::cout<<"Height" << c->getHeight() << "Width" << c->getWidth() << c->getPosition()<<std::endl;
+    std::cout<<"Height " << c->getHeight() << " Width " << c->getWidth() << c->getPosition()<<std::endl;
 
 }
 
@@ -56,7 +56,7 @@ void RayTracer:: render(){
     }
     //std filesystem add it !
     // const char *filename = scene->getOutputFile().c_str();
-    std::cout<<"image_width" << image_width<< " " << image_height << std::endl;
+    std::cout<<"image_width " << image_width<< " " << image_height << std::endl;
         // std::filesystem // use this !!
 
     encodeOneStep(scene->getOutputFile().c_str(), colors, image_width, image_height);
@@ -74,10 +74,7 @@ void RayTracer::encodeOneStep(const char* filename, std::vector<unsigned char>& 
 void RayTracer::push_back_once(std::vector<unsigned char> &colors, math::vec3<double> color ){
     colors.push_back(color.x());
     colors.push_back(color.y());
-    colors.push_back(color.z());
-    if(color.z() > 255 || color.y() > 255 || color.x() > 255){
-        std::cout<<"zjebales" <<std::endl;
-    }
+    colors.push_back(color.z());  
     colors.push_back(255);
 
 }

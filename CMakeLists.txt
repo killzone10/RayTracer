@@ -12,9 +12,14 @@ FetchContent_Declare(tinyxml2
 
 FetchContent_MakeAvailable(tinyxml2)
 
-file(GLOB_RECURSE SRCS *.cpp)
+file(GLOB_RECURSE SRCS 
+        src/*.cpp
+        include/*.h
+)
+
 
 # include_directories()
+include_directories(include)  # Include the 'include' directory
 
 add_executable(${PROJECT_NAME} ${SRCS})
 

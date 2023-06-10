@@ -23,13 +23,15 @@ int main(int argc, char *argv[]){
     if (argc > 2){
         throw std::length_error{ "Passed more than 2 arguments!" };
     }
-    std::filesystem::path p1 = "/scenes/";
     // std::string filePath = argv[1];
     // std::filesystem::path p2 = argv[1];
-    std::filesystem::path filePath = p1 / argv[1]; // concat 2 filenames
+     // concat 2 filenames
 
     try{
-        
+        std::filesystem::path p1 = "/scenes/";
+        std::filesystem::path filePath = p1 / argv[1]; // get filePath !
+
+
         /// T1 render black output ! UNCOMMENT LINES BELOW SO IT WORKS !! //
 
         /* SceneBuilder blackSceneBuilder;
@@ -105,21 +107,17 @@ int main(int argc, char *argv[]){
         std::cout<<filePath<<std::endl;
         // xml parser class
         XmlParser xmlParser{filePath};
-        // scene
         // filename
         const char* output_file = xmlParser.getFileName();
         //r,g,b
         double r{0},g{0},b {0};
         xmlParser.getbackgroundColorElement(r,g,b); // camera przez refenrencje
     
-    
         // final object !
         auto scene = xmlParser.Builder.getScene();
 
         RayTracer RayTracer{scene.get()};
-        RayTracer.print();
         RayTracer.render();
-        // scene ->printSurface();
 
         
     }
