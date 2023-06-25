@@ -17,11 +17,11 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
     // (A+tb−C)⋅(A+tb−C)=r2 // A = origin of ray + t - times b normalized destination vector
     // t2b⋅b+2tb⋅(A−C)+(A−C)⋅(A−C)−r2=0
 
-    math::vec3<double> oc{}; 
-    oc = ray->getOrigin() - position; // origin of ray - center of sphere oc of ray
+    math::vec3<double> eye{}; 
+    eye = ray->getOrigin() - position; // origin of ray - center of sphere oc of ray
     auto a = ray->getDirection().SqrLenght();
-    auto b = 2.0 * oc.dotProduct(ray->getDirection());
-    auto c = oc.SqrLenght() - (radius*radius);
+    auto b = 2.0 * eye.dotProduct(ray->getDirection());
+    auto c = eye.SqrLenght() - (radius*radius);
     auto delta = b*b - 4*a*c;
     if (delta >= 0){
         // choose closer root

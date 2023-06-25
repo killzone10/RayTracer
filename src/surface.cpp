@@ -13,7 +13,7 @@ void Surface::print(){
 }
 
 std::optional<std::shared_ptr<Intersection>> Surface::  checkIntersection(Ray *ray, double t_min, double t_max){
-    std::cout <<" I am in surface parent intersection" <<std::endl;
+    // std::cout <<" I am in surface parent intersection" <<std::endl;
     return {};
 };
 

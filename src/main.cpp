@@ -18,6 +18,7 @@
 #include "sceneBuilder.h"
 #include "scene.h"
 #include <filesystem>
+#include <chrono>
 
 int main(int argc, char *argv[]){    
     if (argc > 2){
@@ -28,7 +29,14 @@ int main(int argc, char *argv[]){
      // concat 2 filenames
 
     try{
-        std::filesystem::path p1 = "/scenes/";
+        // std::filesystem::path p1 = "/scenes/"; // for windows
+        #ifdef _WIN32
+            std::filesystem::path p1 = "../../scenes/"; // for linux
+        #else 
+            std::filesystem::path p1 = "scenes/"; // for windows
+        #endif
+
+
         std::filesystem::path filePath = p1 / argv[1]; // get filePath !
 
 
@@ -106,6 +114,7 @@ int main(int argc, char *argv[]){
         // filePath = "scenes/example3.xml";
         std::cout<<filePath<<std::endl;
         // xml parser class
+
         XmlParser xmlParser{filePath};
         // filename
         const char* output_file = xmlParser.getFileName();
@@ -118,6 +127,7 @@ int main(int argc, char *argv[]){
 
         RayTracer RayTracer{scene.get()};
         RayTracer.render();
+       
 
         
     }

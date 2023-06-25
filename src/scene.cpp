@@ -61,7 +61,7 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
 
 
     double lightLenght{0};
-    for (auto &l : Light){
+    for (auto &l : light){
         // Defines an ambient light with color (r,g,b)
         // - all objects are illuminated by this light. Note: the world can have precisely one ambient light.
 
@@ -84,7 +84,9 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
 
         if (parallelCast != nullptr){
             L = - parallelCast->getDirection();
-            lightLenght = 100000;     //        
+            // lightLenght = 100000;     //   should be infinity there     
+            lightLenght =  std::numeric_limits<float>::infinity();     //   should be infinity there     
+
         }
         // point is ike parallel, but not in infinity !
         // Defines a point light with color (r,g,b) and position (x,y,z).

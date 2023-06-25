@@ -30,7 +30,7 @@ class Scene{
         std::string outputFile{};
         math::vec3 <double> backgroundColor{};
         std::vector<std::unique_ptr<Surface>> surface;
-        std::vector<std::unique_ptr<Light>> Light;
+        std::vector<std::unique_ptr<Light>> light;
 
         std::unique_ptr<Camera> c;
         int k{2};

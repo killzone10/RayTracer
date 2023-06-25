@@ -16,6 +16,6 @@ class Mesh : public Surface{
     void setNormals(std::vector<math::vec3 <double>> normals);
     void setVertices(std::vector<math::vec3 <double>> vertices);
     void setTextures(std::vector<math::vec3 <double>> setTextures);
-    bool checkIntersection(Ray *ray, double t_min, double t_max, std::vector<std::shared_ptr<Intersection>> &intersection);
+    std::optional<std::shared_ptr<Intersection>> checkIntersection(Ray *ray, double t_min, double t_max, std::vector<std::shared_ptr<Intersection>> &intersection);
 
 };

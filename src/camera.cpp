@@ -9,9 +9,9 @@ Camera::Camera(math::vec3<double> position, math::vec3<double> lookat, math::vec
 
                     ratio = horizontal / vertical; //width/ height
                     viewportHeight = 2.0;
-                    double tangens = tan(angle);
+                    double tangens = tan(angle*3.1415926/180);
                     viewportWidth = ratio  * viewportHeight ;
-                    // viewportWidth = ratio  * viewportHeight * tangens;
+                    // viewportWidth = ratio  * viewportHeight * tangens; //add this later !
                     math::vec3 <double> temp{viewportWidth,0,0};
                     math::vec3 <double> temp1{0, viewportHeight, 0};
                     horizontalVec = temp;

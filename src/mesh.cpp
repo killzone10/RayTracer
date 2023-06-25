@@ -21,9 +21,9 @@ void Mesh::setTextures(std::vector<math::vec3 <double>> setTextures){
 
 
 
-bool Mesh::checkIntersection(Ray *ray, double t_min, double t_max, std::vector<std::shared_ptr<Intersection>> &intersection){
+std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, double t_min, double t_max, std::vector<std::shared_ptr<Intersection>> &intersection){
 
 
-    return false;
+    return {};
 };
 

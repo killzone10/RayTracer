@@ -8,7 +8,7 @@ void SceneBuilder::addCamera(std::unique_ptr<Camera> camera){
 }
 
 void SceneBuilder::addLight(std::unique_ptr<Light> light){
-    scene->Light.push_back(std::move(light));
+    scene->light.push_back(std::move(light));
 }
 
 void SceneBuilder::addMeshes(std::unique_ptr<Surface> surface){

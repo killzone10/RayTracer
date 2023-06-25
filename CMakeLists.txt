@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 project(ray_tracer)
 
 set(CMAKE_CXX_STANDARD 17)
-
 include(FetchContent)
 
 FetchContent_Declare(tinyxml2

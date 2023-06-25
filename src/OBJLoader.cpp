@@ -1,6 +1,7 @@
 #include "OBJLoader.h"
 //http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 void OBJLoader::readFile(std::string fileName){
+    fileName = "/scenes/" + fileName; // TODO change on c++ 17
     FILE * file = fopen(fileName.c_str(), "r");
     if( file == NULL ){
         throw std::runtime_error("eror opening a file");        
@@ -53,7 +54,7 @@ void OBJLoader::readFile(std::string fileName){
             vertexIndices.push_back(vertexIndex[2]);
             textureIndices.push_back(textureIndex[0]);
             textureIndices.push_back(textureIndex[1]);
-            textureIndices .push_back(textureIndex[2]);
+            textureIndices.push_back(textureIndex[2]);
             normalIndices.push_back(normalIndex[0]);
             normalIndices.push_back(normalIndex[1]);
             normalIndices.push_back(normalIndex[2]);
