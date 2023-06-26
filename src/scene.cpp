@@ -38,7 +38,8 @@ std::optional<std::shared_ptr<Intersection>> Scene:: checkGlobalIntersections (R
     }
     // choose intersection
     // TODO:: Think about it but it should be something like if  ray.pos > ray1.pos choose ray1 
-    std::shared_ptr<Intersection> minIntersection = intersections[0];
+    std::shared_ptr<Intersection> minIntersection = chooseMinIntersection(intersections);
+    //std::shared_ptr<Intersection> minIntersection = intersections[0];
     return minIntersection;
 }
     //determine closest intersection 
@@ -138,4 +139,23 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
     }
     // add lights !
     return finalColor;
+}
+
+
+
+std::shared_ptr<Intersection> Scene:: chooseMinIntersection(std::vector<std::shared_ptr<Intersection>> &intersections){
+    std::shared_ptr<Intersection> minIntersection;
+    double a{10},b{10},c{10};
+    for (auto &intersection : intersections){
+        math::vec3 <double> currentPosition = intersection->getPosition();
+        auto sum = currentPosition.x() + currentPosition.y() + currentPosition.z();
+        if (sum < (a + b + c)){
+            a = currentPosition.x();
+            b = currentPosition.y();
+            c = currentPosition.z();
+            minIntersection = intersection;
+        }
+       
+    }
+    return minIntersection;
 }

@@ -84,7 +84,7 @@ math::vec3<double> RayTracer::trace (Ray  *r){
     //
 //     for each object in scene
 //      intersection = object.intersect(ray)
-    double t_min = 0;
+    double t_min = 0.00001;
     double t_max = 40000;
 
     math::vec3 <double> color (0.0, 0.0, 0.0);
@@ -92,6 +92,9 @@ math::vec3<double> RayTracer::trace (Ray  *r){
     if (intersection.has_value()){
         //return something
         auto intersectionValue = intersection.value();
+        auto reflectance = intersectionValue->getReflectance();
+        auto transmitance = intersectionValue->getTransmitance();
+
         auto color = intersectionValue->getColor();
         auto normal = intersectionValue->getNormal();
         normal.normalize();

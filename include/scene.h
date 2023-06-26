@@ -49,4 +49,5 @@ class Scene{
         math::vec3 <double> getbackgroudColor();    
         std::optional<std::shared_ptr<Intersection>> checkGlobalIntersections(Ray *ray, double t_min, double t_max, std::vector<std::shared_ptr<Intersection>> &intersection);
         math::vec3 <double>illuminate(Ray *ray, std::shared_ptr<Intersection> &intersection);
+        std::shared_ptr<Intersection> chooseMinIntersection(std::vector<std::shared_ptr<Intersection>> &intersections);
 };

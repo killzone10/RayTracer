@@ -59,7 +59,7 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
 
         // CHECK WHICH TYPE OF MATERIAL !!!
         auto solid = dynamic_cast<materialSolid*>(m_point);
-        if (solid!= nullptr){
+        if (solid != nullptr){
             intersection->setColors(solid->getColor());
         }
 
