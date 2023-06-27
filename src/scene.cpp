@@ -36,13 +36,11 @@ std::optional<std::shared_ptr<Intersection>> Scene:: checkGlobalIntersections (R
     if (intersections.empty()){
         return {};
     }
-    // choose intersection
-    // TODO:: Think about it but it should be something like if  ray.pos > ray1.pos choose ray1 
+
+    //determine closest intersection (its the one where root is the lowest)
     std::shared_ptr<Intersection> minIntersection = chooseMinIntersection(intersections);
-    //std::shared_ptr<Intersection> minIntersection = intersections[0];
     return minIntersection;
 }
-    //determine closest intersection 
 
 
 math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &intersection){
@@ -58,20 +56,21 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
     math::vec3<double> objectColor = intersection->getColor();
     math::vec3<double> lightColor (0,0,0);
     math::vec3<double> finalColor (0,0,0);
-    std::vector<std::shared_ptr<Intersection>> shadowIntersections;
-
+    double lambertian {0};
 
     double lightLenght{0};
+    unsigned int i {0};
     for (auto &l : light){
         // Defines an ambient light with color (r,g,b)
         // - all objects are illuminated by this light. Note: the world can have precisely one ambient light.
 
-        
+        std::vector<std::shared_ptr<Intersection>> shadowIntersections;
+
         lightColor = l->getColor();
 
         auto ambientCast = dynamic_cast<ambientLight*> (l.get());
         if (ambientCast != nullptr){
-                ambient += lightColor * objectColor * Ka;
+                ambient += lightColor * objectColor ;
                 continue;
 
         }
@@ -79,10 +78,10 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
         math::vec3<double>N(0,0,0); // normal vector
         math::vec3<double>R(0,0,0); // reflection vector
         math::vec3<double>E(0,0,0); // specular vector ITS THE EASIEST BECAUSE ITS - RAY VECTOR
-        auto parallelCast = dynamic_cast<parallelLight*> (l.get());
         //Defines a parallel light with color (r,g,b) - much like the sun,
         // these lights are infinitely far away, and only have a direction vector direction (x,y,z).
 
+        auto parallelCast = dynamic_cast<parallelLight*> (l.get());
         if (parallelCast != nullptr){
             L = - parallelCast->getDirection();
             // lightLenght = 100000;     //   should be infinity there     
@@ -97,37 +96,53 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
         if (pointCast != nullptr){
             L = pointCast->getPosition() - intersection->getPosition(); // light source - origin
             lightLenght = L.Lenght();
+            L.normalize();
+            // this below is left vs right light
+            // if (i == 0){
+            //     i++;
+            //     continue;
+            // }
+            // if ( i == 1){
+            //     continue;
+            // }
+
         }
         auto spotCast = dynamic_cast<spotLight*> (l.get());
         if (spotCast != nullptr){
             // nothing 
+            continue;
         }
         // shadow ray part !! 
-        std::unique_ptr<Ray> shadowRay = std::make_unique<Ray>(intersection->getPosition(), L);
+        std::unique_ptr<Ray> shadowRay = std::make_unique<Ray>(intersection->getPosition(), L); // L is normalized
+        auto shadowIntersection = checkGlobalIntersections(shadowRay.get(), 0.00001, lightLenght, shadowIntersections);
+        if (!shadowIntersection.has_value()){ 
 
-        auto shadowIntersection = checkGlobalIntersections(shadowRay.get(), 0.0001, lightLenght, shadowIntersections);
-        if (!shadowIntersection.has_value()){ // 00:27 added
-
+       
             N = intersection->getNormal();
             N.normalize();
-            L.normalize(); // check it later
-            E = -intersection->getPosition();
+            //E = -intersection->getPosition();
+            E = -ray->getDirection();
             E.normalize();
             R = ((N*2*(N.dotProduct(L))) - L); // 2 (n *I)*n - I 
-            // create vectors and do the magic ;)
-
+            R.normalize();
             //diffuse part object color * light color * rest
-            double lambertian = std::max(0.0, L.dotProduct(N));
+            lambertian = std::max(0.0, L.dotProduct(N));
             // specular lightColor * specular part * ks
-            double lightSpecular = pow(std::max(E.dotProduct(R),0.0), exponent); // check if ER or RE
+            
+            double lightSpecular = pow(std::max(E.dotProduct(R), 0.0),  exponent); // check if ER or RE
             // ambient ambient * object Color 
-
-            diffuse +=  lightColor * objectColor * lambertian * Kd; // vec 3 diffuse
-            specular +=   lightColor * lightSpecular * Ks;  // vec 3 specular
-        // ambient += lightColor * objectColor * Ka;
+        
+            diffuse +=  lightColor * objectColor * lambertian ;  // vec 3 diffuse
+            specular =  specular +  (lightColor * lightSpecular) ;  // vec 3 specular
+           
+        // ambient += lightColor * o=bjectColor * Ka;
         }
+        i++;
     }
-    finalColor = diffuse + specular + ambient;
+    diffuse = diffuse * Kd;
+    specular = specular*  Ks;
+    ambient = ambient *Ka;
+    finalColor = diffuse + specular + ambient ;
     if (finalColor.x() > 1 ) { 
         finalColor[0] = 1;
     }
@@ -145,17 +160,24 @@ math::vec3 <double> Scene:: illuminate(Ray *ray, std::shared_ptr<Intersection> &
 
 std::shared_ptr<Intersection> Scene:: chooseMinIntersection(std::vector<std::shared_ptr<Intersection>> &intersections){
     std::shared_ptr<Intersection> minIntersection;
-    double a{10},b{10},c{10};
+    unsigned int i =0;
+    double t;
     for (auto &intersection : intersections){
-        math::vec3 <double> currentPosition = intersection->getPosition();
-        auto sum = currentPosition.x() + currentPosition.y() + currentPosition.z();
-        if (sum < (a + b + c)){
-            a = currentPosition.x();
-            b = currentPosition.y();
-            c = currentPosition.z();
+        if (i == 0){
+            t = intersection->getRoot();
             minIntersection = intersection;
+
         }
-       
+        else {
+            if (intersection->getRoot() <= t){
+                t = intersection->getRoot();
+                minIntersection = intersection;
+            }
+           
+        }
+        i++;
+         
+
     }
     return minIntersection;
 }

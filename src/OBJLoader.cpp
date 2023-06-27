@@ -25,8 +25,8 @@ void OBJLoader::readFile(std::string fileName){
         else if ( strcmp( lineHeader, "vt" ) == 0 ){
             double x{0}, y{0}, z{0};
 
-            fscanf(file, "%lf %lf %lf\n", &x, &y, &z );
-            math::vec3 vec{x,y,z};
+            fscanf(file, "%lf %lf\n", &x, &y );
+            math::vec3<double> vec{x,y,0};
 
             textures.push_back(vec);
         }
@@ -34,9 +34,8 @@ void OBJLoader::readFile(std::string fileName){
         else if ( strcmp( lineHeader, "vn" ) == 0 ){
             double x{0}, y{0}, z{0};
 
-            fscanf(file, "%lf %lf \n", &x, &y );
-            math::vec3 vec{x,y,z};
-
+            fscanf(file, "%lf %lf %lf\n", &x, &y, &z );
+            math::vec3<double> vec{x,y,z};
             normals.push_back(vec);
 
         }
@@ -49,15 +48,16 @@ void OBJLoader::readFile(std::string fileName){
                 printf("File can't be read by our simple parser : ( Try exporting with other options\n");
                 throw std::runtime_error("eror opening a file");        
             }
-            vertexIndices.push_back(vertexIndex[0]);
-            vertexIndices.push_back(vertexIndex[1]);
-            vertexIndices.push_back(vertexIndex[2]);
-            textureIndices.push_back(textureIndex[0]);
-            textureIndices.push_back(textureIndex[1]);
-            textureIndices.push_back(textureIndex[2]);
-            normalIndices.push_back(normalIndex[0]);
-            normalIndices.push_back(normalIndex[1]);
-            normalIndices.push_back(normalIndex[2]);
+            vertexIndices.push_back(vertexIndex[0] - 1);
+            vertexIndices.push_back(vertexIndex[1] - 1);
+            vertexIndices.push_back(vertexIndex[2] - 1);
+            textureIndices.push_back(textureIndex[0] - 1);
+            textureIndices.push_back(textureIndex[1] - 1);
+            textureIndices .push_back(textureIndex[2] - 1);
+            normalIndices.push_back(normalIndex[0] - 1);
+            normalIndices.push_back(normalIndex[1] - 1);
+            normalIndices.push_back(normalIndex[2] - 1);
         }
     }
 }
+

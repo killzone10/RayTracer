@@ -94,8 +94,7 @@ math::vec3<double> RayTracer::trace (Ray  *r){
         auto intersectionValue = intersection.value();
         auto reflectance = intersectionValue->getReflectance();
         auto transmitance = intersectionValue->getTransmitance();
-
-        auto color = intersectionValue->getColor();
+        //auto color = intersectionValue->getColor();
         auto normal = intersectionValue->getNormal();
         normal.normalize();
         // the light components specular diffuse and ambient

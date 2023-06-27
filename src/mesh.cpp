@@ -15,8 +15,14 @@ void Mesh::setNormals(std::vector<math::vec3 <double>> normals){
 void Mesh::setVertices(std::vector<math::vec3 <double>> vertices){
     this->vertices = vertices;
 }
-void Mesh::setTextures(std::vector<math::vec3 <double>> setTextures){
+void Mesh::setTextures(std::vector<math::vec3 <double>> textures){
     this->textures = textures;
+}
+void Mesh::setIndices(std::vector<unsigned int> vertexIndices,std::vector<unsigned int> textureIndices,std::vector<unsigned int> normalIndices){
+    this->vertexIndices = vertexIndices;
+    this->textureIndices = textureIndices;
+    this->normalIndices = normalIndices;
+
 }
 
 
@@ -24,25 +30,27 @@ void Mesh::setTextures(std::vector<math::vec3 <double>> setTextures){
 std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, double t_min, double t_max){
 /// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection.html 
 //https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm  code from those site was used
+    double EPSILON = 0.00001; // TODO change to t_min
+    double closestIntersection = t_max;
+    std::shared_ptr<Intersection> intersection;
+    bool wasIntersection {false};
+    for (int i = 0; i < vertexIndices.size(); i+=3){
+        auto v0 = vertices[vertexIndices[i]];
+        auto v1 = vertices[vertexIndices[i+1]];
+        auto v2 = vertices [vertexIndices[i+2]];
 
-
-    for (int i = 0; i < vertices.size(); i+=3){
-        auto v0 = vertices[i];
-        auto v1 = vertices[i+1];
-        auto v2 = vertices [i+2];
         auto e1 = v1 - v0;
         auto e2 = v2 - v0;
  
         auto d = ray->getDirection() ; // 
         // first plug t into
-        auto w2 = d.crossProduct(e2);
-        auto a = e1.dotProduct(w2);
-        // negative determinant equals back facing
-        // and if its close to 0 then its parallel
-        if (a < t_min || fabs(a) < t_min){
+        auto w2 = d.crossProduct(e2); // pvec
+        auto a = e1.dotProduct(w2); // det
+        // if less than t_min dont count it
+        if (std::abs(a) <  EPSILON) {
             continue;
         }
-        auto f = 1.0 / a ; // fraction - all of the things have to be tivided by that
+        auto f = 1.0 / a ; // inverse det
         auto s = ray->getOrigin() - v0; // 
         auto u = f * s.dotProduct(w2);
         if (u < 0.0 || u > 1.0)
@@ -53,11 +61,14 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
         if (v < 0.0 || u + v > 1.0)
             continue;
         // now we re computing T to dint the intersection point on the lin
-        float t = f * e2.dotProduct(w1);
-        if (t > t_min && t < t_max){
+        double t = f * e2.dotProduct(w1);
+        if (t > EPSILON && t < closestIntersection){
+            wasIntersection = true;
+            closestIntersection = t;
             auto intersectionPoint = ray->getMovedPoint(t);
-            auto normal  = normals[0];
-            std::shared_ptr<Intersection> intersection = std::make_shared<Intersection>(intersectionPoint,normal, t);
+            auto normal  = normals[normalIndices[i]];
+            // auto normal  = normals[2];
+            intersection = std::make_shared<Intersection>(intersectionPoint, normal, t);
             //copied from the sphere
             intersection->setFront(ray, normal);
               //material
@@ -76,11 +87,12 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             if (texture != nullptr){
                 intersection->setName(texture->getName());
             }
-            return intersection;
 
-
-            }
-
+        }
+  
+    }
+    if (wasIntersection){
+        return intersection;
     }
     return {};
 };

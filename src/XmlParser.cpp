@@ -574,7 +574,7 @@ void XmlParser::getMeshes(){
                 mesh->setTextures(Loader.getTextures());
                 mesh->setNormals(Loader.getNormals());
                 mesh->setVertices(Loader.getVertices());
-
+                mesh->setIndices(Loader.getIndicesVertices(), Loader.getIndicesTextures(), Loader.getIndicesNormals());
                 Builder.addMeshes(std::move(mesh));
 
 

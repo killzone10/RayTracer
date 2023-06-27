@@ -27,4 +27,17 @@ class OBJLoader {
             return std::move(normals);
         }
 
+        std::vector<unsigned int> getIndicesVertices(){
+            return std::move(vertexIndices);
+        }
+
+         std::vector<unsigned int> getIndicesTextures(){
+            return std::move(textureIndices);
+        }
+
+         std::vector<unsigned int> getIndicesNormals(){
+            return std::move(normalIndices);
+        }
+
+
 };
