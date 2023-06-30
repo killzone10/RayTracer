@@ -49,4 +49,6 @@ class Intersection{
         double getRefraction();
         void setFront(Ray *r, math::vec3 <double> & outward_normal);
 
+        bool getFront();
+
 };

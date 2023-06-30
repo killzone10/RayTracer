@@ -30,7 +30,7 @@ void Mesh::setIndices(std::vector<unsigned int> vertexIndices,std::vector<unsign
 std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, double t_min, double t_max){
 /// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection.html 
 //https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm  code from those site was used
-    double EPSILON = 0.00001; // TODO change to t_min
+    //double EPSILON = 0.00001; // TODO change to t_min
     double closestIntersection = t_max;
     std::shared_ptr<Intersection> intersection;
     bool wasIntersection {false};
@@ -47,7 +47,7 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
         auto w2 = d.crossProduct(e2); // pvec
         auto a = e1.dotProduct(w2); // det
         // if less than t_min dont count it
-        if (std::abs(a) <  EPSILON) {
+        if (std::abs(a) <  t_min) {
             continue;
         }
         auto f = 1.0 / a ; // inverse det
@@ -62,7 +62,7 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             continue;
         // now we re computing T to dint the intersection point on the lin
         double t = f * e2.dotProduct(w1);
-        if (t > EPSILON && t < closestIntersection){
+        if (t > t_min && t < closestIntersection){
             wasIntersection = true;
             closestIntersection = t;
             auto intersectionPoint = ray->getMovedPoint(t);

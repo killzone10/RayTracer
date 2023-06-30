@@ -44,7 +44,7 @@ void RayTracer:: render(){
             std::unique_ptr<Ray> ray = c->getRayToPixel(offsetHight, offsetWidth) ;        
             math::vec3<double> pixel_color(offsetHight, offsetWidth, 0.25); // gotta have fun there
 
-            pixel_color = trace(ray.get()); // and now we have to adjst this
+            pixel_color = trace(ray.get(), c->getmaxBounces()); // and now we have to adjst this
 
             math::vec3<double> color = pixel_color.save_color();
             
@@ -79,12 +79,12 @@ void RayTracer::push_back_once(std::vector<unsigned char> &colors, math::vec3<do
 
 }
 
-math::vec3<double> RayTracer::trace (Ray  *r){
+math::vec3<double> RayTracer::trace (Ray  *r, int bounces){
     std::vector<std::shared_ptr<Intersection>> intersections;
     //
 //     for each object in scene
 //      intersection = object.intersect(ray)
-    double t_min = 0.00001;
+    double t_min = 0.001;
     double t_max = 40000;
 
     math::vec3 <double> color (0.0, 0.0, 0.0);
@@ -97,17 +97,93 @@ math::vec3<double> RayTracer::trace (Ray  *r){
         //auto color = intersectionValue->getColor();
         auto normal = intersectionValue->getNormal();
         normal.normalize();
+        math::vec3<double> reflectedPart(0,0,0);
+        math::vec3<double> refractedPart(0,0,0);
         // the light components specular diffuse and ambient
         // should be done in scene
         // for each light source color +=illuminate(ray, intersection, light source)
         // math::vec3 final {normal.x() * color.x() , normal.y() * color.y() , normal.z() * color.z()  };
         color = scene->illuminate(r, intersectionValue);
-        return color;
+        if (bounces > 0 && reflectance > 0){
+            // reflected_ray = get_reflected_ray();
+            // reflected_color = reflectance * trace(reflectance_ray, depth - 1)
+            //𝑟 = 2 ∗ −𝑑 ∗ 𝑛 ∗ 𝑛 + d
+            // swap 
+            auto direction = - normal*2 *(r->getDirection().dotProduct(normal)) + r->getDirection();
+            std::unique_ptr<Ray> reflectedRay = std::make_unique<Ray>(intersectionValue->getPosition(), direction); // L is normalized
+            auto reflectionColor = trace(reflectedRay.get(), bounces - 1);
+            reflectionColor = reflectionColor * reflectance;
+            reflectedPart += reflectionColor;
 
-        // return value->getColor(); // COLOR
-        
-        // return (first*(1.0-t)) + (second * t);
-        // return intersection.getColor();
+            
+        }
+        // refraction
+        if (bounces > 0 && transmitance > 0){
+             // reflected_ray = get_reflected_ray();
+            // reflected_color = reflectance * trace(reflectance_ray, depth - 1)
+            //refraction needed
+            std::unique_ptr<Ray> refractionRay;
+            auto refraction = intersectionValue->getRefraction();
+            auto v = r->getDirection();
+            v.normalize();
+            //auto t_horizontal =  (v + (normal *(v.dotProduct(normal)))) * refraction;
+            auto nestedFunction = (1.0 - ((std::pow(refraction, 2.0))) * ((1.0 - (std::pow(v.dotProduct(normal),2)))));
+            double coeff;
+            math::vec3<double> direction;
+            auto normalDir = v.dotProduct(normal); // not needed
+            if (intersectionValue->getFront()){
+                coeff = 1.0 / (intersectionValue->getRefraction()); // n1/ no
+            }
+            else {
+                coeff = intersectionValue->getRefraction(); // n0 / n1
+            }
+            
+            // we have to flip n as with ray tracing in one weekend
+           
+            //https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel.html
+
+            if (nestedFunction < 0 ){ // total internal reflection T II
+            //https://raytracing.github.io/books/RayTracingInOneWeekend.html
+                direction = v - (normal*2 *v.dotProduct(normal));
+                direction.normalize();
+
+                refractionRay = std::make_unique<Ray>(intersectionValue->getPosition(), direction); 
+            }
+            else {
+                //                 vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
+                //     auto cos_theta = fmin(dot(-uv, n), 1.0);
+                //     vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+                //     vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+                //     return r_out_perp + r_out_parallel;
+                // }
+                auto t_vertical = -normal *(sqrt(nestedFunction));
+                auto t_horizontal =  (v + (normal *(-v.dotProduct(normal)))) * coeff; // -dotproduct  because had to be flipped ! <0 
+                direction  = t_horizontal + t_vertical;
+                direction.normalize();
+                refractionRay = std::make_unique<Ray>(intersectionValue->getPosition(), direction); 
+
+            }
+
+            auto refractionColor = trace(refractionRay.get(), bounces - 1);
+            refractionColor = refractionColor * refraction;
+            refractedPart += refractionColor;
+
+        }
+
+        color = color * (1 - reflectance - transmitance) + reflectedPart + refractedPart;
+
+        if (color.x() >1){
+            color[0] = 1;
+        }
+        if (color.y() > 1){
+            color[1] = 1;
+        }
+        if (color.z() > 1){
+            color[2] = 1;
+        }
+
+        return color ;
+
 
     }
     else { //return background

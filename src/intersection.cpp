@@ -102,4 +102,15 @@ void Intersection::setFront(Ray *r,  math::vec3<double> & directed_normal){
         isFront = false;
         normal = -directed_normal;
     }
+
+}
+// void Intersection::setFront(Ray *r,  math::vec3<double> & directed_normal){
+//     auto dot = r->getDirection().dotProduct(directed_normal);
+//     normal = directed_normal;
+    
+// }
+
+
+bool Intersection:: getFront(){
+    return isFront;
 }

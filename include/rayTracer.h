@@ -19,7 +19,7 @@ class RayTracer{
         
         void push_back_once(std::vector<unsigned char> &colors, math::vec3<double> color );
         void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
-        math::vec3<double> trace(Ray *r);
+        math::vec3<double> trace(Ray *r, int bounces);
 
 
 
