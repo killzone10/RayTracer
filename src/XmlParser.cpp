@@ -475,7 +475,7 @@ void XmlParser::getSpheres(){
                 std::cout << "OBJ Material" << "Name:"<< name <<std::endl; 
                 
                 std::unique_ptr<materialTextured> material = std::make_unique<materialTextured>(ka, kd, ks, exponent, reflectance, transmitance, refraction, name);
-                material->decodeTwoSteps(); // add texture !! 
+                //material->decodeTwoSteps(); // add texture !! 
 
                 std::unique_ptr <Sphere> sphere = std::make_unique<Sphere>(std::move(transformations), std::move(material), radius, position);
                 Builder.addMeshes(std::move(sphere));
@@ -604,13 +604,14 @@ void XmlParser::getMeshes(){
 
 
                 std::unique_ptr<materialTextured> material = std::make_unique<materialTextured>(ka, kd, ks, exponent, reflectance, transmitance, refraction, name);
-                material->decodeTwoSteps(); // add texture !! 
+                //material->decodeTwoSteps(); // add texture !! 
 
                 std::unique_ptr <Mesh> mesh = std::make_unique<Mesh>(std::move(transformations), std::move(material), meshName);
 
                 mesh->setTextures(Loader.getTextures());
                 mesh->setNormals(Loader.getNormals());
                 mesh->setVertices(Loader.getVertices());
+                mesh->setIndices(Loader.getIndicesVertices(), Loader.getIndicesTextures(), Loader.getIndicesNormals());
                 Builder.addMeshes(std::move(mesh));
 
             }

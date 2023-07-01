@@ -65,7 +65,16 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
 
         auto texture = dynamic_cast<materialTextured*> (m_point);
         if (texture != nullptr){
-            intersection->setName(texture->getName());
+            intersection->setName(texture->getName());  
+            auto d = intersection->getNormal();
+            auto u = 0.5 + (atan2(d.x(), d.y())/(2*3.1415926));
+            auto v = 0.5 - (asin(d.y())/ 3.1415926);
+
+            auto c1 = texture->getPixels(u, v);
+            // cast it
+            intersection->setColors(c1);
+
+            //calculate color
         }
         return intersection;
     }

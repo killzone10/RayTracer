@@ -127,16 +127,18 @@ math::vec3<double> RayTracer::trace (Ray  *r, int bounces){
             auto v = r->getDirection();
             v.normalize();
             //auto t_horizontal =  (v + (normal *(v.dotProduct(normal)))) * refraction;
-            auto nestedFunction = (1.0 - ((std::pow(refraction, 2.0))) * ((1.0 - (std::pow(v.dotProduct(normal),2)))));
             double coeff;
             math::vec3<double> direction;
             auto normalDir = v.dotProduct(normal); // not needed
+
             if (intersectionValue->getFront()){
                 coeff = 1.0 / (intersectionValue->getRefraction()); // n1/ no
             }
             else {
                 coeff = intersectionValue->getRefraction(); // n0 / n1
             }
+            auto nestedFunction = (1.0 - (((std::pow(coeff, 2.0))) * ((1.0 - (std::pow(v.dotProduct(normal),2))))));
+
             
             // we have to flip n as with ray tracing in one weekend
            
@@ -144,19 +146,21 @@ math::vec3<double> RayTracer::trace (Ray  *r, int bounces){
 
             if (nestedFunction < 0 ){ // total internal reflection T II
             //https://raytracing.github.io/books/RayTracingInOneWeekend.html
-                direction = v - (normal*2 *v.dotProduct(normal));
+                direction = v - (normal*2.0 *v.dotProduct(normal));
                 direction.normalize();
-
                 refractionRay = std::make_unique<Ray>(intersectionValue->getPosition(), direction); 
             }
             else {
                 //                 vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
-                //     auto cos_theta = fmin(dot(-uv, n), 1.0);
-                //     vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+                //     auto cos_theta = fmin(dot(-uv, n), 1.0); we have to flip here
+                //     vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n); 
                 //     vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
                 //     return r_out_perp + r_out_parallel;
                 // }
-                auto t_vertical = -normal *(sqrt(nestedFunction));
+                //https://raytracing.github.io/books/RayTracingInOneWeekend.html#dielectrics/refraction
+                // Vec3.scale(Vec3.add(Vec3.scale(n, -c), v), r),  n*-c + v * r 
+                //  Vec3.scale(n, Math.sqrt(D))  n * sqrt(D)
+                auto t_vertical = -normal * (sqrt(nestedFunction));
                 auto t_horizontal =  (v + (normal *(-v.dotProduct(normal)))) * coeff; // -dotproduct  because had to be flipped ! <0 
                 direction  = t_horizontal + t_vertical;
                 direction.normalize();
@@ -165,7 +169,7 @@ math::vec3<double> RayTracer::trace (Ray  *r, int bounces){
             }
 
             auto refractionColor = trace(refractionRay.get(), bounces - 1);
-            refractionColor = refractionColor * refraction;
+            refractionColor = refractionColor * transmitance;
             refractedPart += refractionColor;
 
         }

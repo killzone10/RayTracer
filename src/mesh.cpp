@@ -34,6 +34,10 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
     double closestIntersection = t_max;
     std::shared_ptr<Intersection> intersection;
     bool wasIntersection {false};
+    math::vec3<double> tx0;
+    math::vec3<double> tx1;
+    math::vec3<double> tx2;
+    math::vec3<double> barycentric;
     for (int i = 0; i < vertexIndices.size(); i+=3){
         auto v0 = vertices[vertexIndices[i]];
         auto v1 = vertices[vertexIndices[i+1]];
@@ -67,6 +71,10 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             closestIntersection = t;
             auto intersectionPoint = ray->getMovedPoint(t);
             auto normal  = normals[normalIndices[i]];
+            tx0 = textures[textureIndices[i]];
+            tx1 = textures[textureIndices[i+1]];
+            tx2 = textures[textureIndices[i +2]];
+            barycentric = math::vec3<double>(1 - u - v, u, v);
             // auto normal  = normals[2];
             intersection = std::make_shared<Intersection>(intersectionPoint, normal, t);
             //copied from the sphere
@@ -86,6 +94,19 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             auto texture = dynamic_cast<materialTextured*> (m_point);
             if (texture != nullptr){
                 intersection->setName(texture->getName());
+
+                // w1 b w2 a 
+                auto u = barycentric.x() * tx0.x()
+                        + barycentric.y() * tx1.x()
+                        + barycentric.z() * tx2.x();
+
+                auto v = barycentric.x() * tx0.y()
+                        + barycentric.y() * tx1.y()
+                        + barycentric.z() * tx2.y();
+
+                auto c1 = texture->getPixels(u, v);
+                intersection->setColors(c1);
+
             }
 
         }

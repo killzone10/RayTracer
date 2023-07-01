@@ -10,7 +10,7 @@
 #include <optional>
 #include "materialSolid.h"
 #include "materialTextured.h"
-
+#include <cmath>
 class Surface{
     private:
         //material
