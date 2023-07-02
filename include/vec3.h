@@ -178,7 +178,169 @@ class vec3 {
         os << std::fixed << std::setprecision(5) 
         << a.vec[0] << ", " << a.vec[1] << ", " << a.vec[2];
         return os;
-}
+}   
+// https://github.com/gynvael/MythTracer
+template <typename T>
+class mat4 {  
+ public:
+  typedef T basetype;
+
+  mat4 operator*(const mat4& a) {
+    mat4 res;
+    for (size_t j = 0; j < 4; j++) {
+      for (size_t i = 0; i < 4; i++) {
+        res.m[j][i] = m[j][0] * a.m[0][i] + 
+                      m[j][1] * a.m[1][i] + 
+                      m[j][2] * a.m[2][i] + 
+                      m[j][3] * a.m[3][i];
+      }
+    }
+
+    return res;
+  }
+      // Argument constructor that takes three vec3 objects
+  mat4(){
+    m[0][0] = 1; m[0][1] = 0; m[0][2] = 0; m[0][3] = 0;
+    m[1][0] = 0; m[1][1] = 1; m[1][2] = 0; m[1][3] = 0;
+    m[2][0] = 0; m[2][1] = 0; m[2][2] = 1; m[2][3] = 0;
+    m[3][0] = 0;     m[3][1] = 0;     m[3][2] = 0;     m[3][3] = 1;
+  }
+  mat4(const vec3<T>& v1, const vec3<T>& v2, const vec3<T>& v3, const vec3<T>&v4) {
+    m[0][0] = v1[0]; m[0][1] = v2[0]; m[0][2] = v2[0]; m[0][3] = v4[0];
+    m[1][0] = v1[1]; m[1][1] = v2[1]; m[1][2] = v2[1]; m[1][3] = v4[1];
+    m[2][0] = v1[2]; m[2][1] = v2[2]; m[2][2] = v3[2]; m[2][3] = v4[2];
+    m[3][0] = 0;     m[3][1] = 0;     m[3][2] = 0;     m[3][3] = 1;
+  }
+  mat4& operator*=(const mat4& a) {
+    mat4 res = *this * a;
+    *this = res;
+    return *this;
+  } 
+
+  // Note: The fourth element of the vector is always assumed to be 1.
+//   template<typename U>
+//   vec3<U> operator*(const vec3<U>& a) {
+//     return vec3<U>{
+//       m[0][0] * a.vec[0] + m[0][1] * a.vec[1] + m[0][2] * a.vec[2] + m[0][3],
+//       m[1][0] * a.vec[0] + m[1][1] * a.vec[1] + m[1][2] * a.vec[2] + m[0][3],
+//       m[2][0] * a.vec[0] + m[2][1] * a.vec[1] + m[2][2] * a.vec[2] + m[0][3]
+//     };
+//   }
+ template<typename U>
+  vec3<U> operator*(const vec3<U>& a) {
+    return vec3<U>{
+      m[0][0] * a.vec[0] + m[0][1] * a.vec[1] + m[0][2] * a.vec[2] + m[0][3],
+      m[1][0] * a.vec[0] + m[1][1] * a.vec[1] + m[1][2] * a.vec[2] + m[0][3],
+      m[2][0] * a.vec[0] + m[2][1] * a.vec[1] + m[2][2] * a.vec[2] + m[0][3]
+    };
+  }
 
 
+    void setFromVectors(const vec3<T>& v1, const vec3<T>& v2, const vec3<T>& v3, const vec3<T>&v4) {
+    m[0][0] = v1[0]; m[0][1] = v2[0]; m[0][2] = v3[0]; m[0][3] = v4[0];
+    m[1][0] = v1[1]; m[1][1] = v2[1]; m[1][2] = v3[1]; m[1][3] = v4[1];
+    m[2][0] = v1[2]; m[2][1] = v2[2]; m[2][2] = v3[2]; m[2][3] = v4[2];
+    m[3][0] = 0;     m[3][1] = 0;     m[3][2] = 0;     m[3][3] = 1;
+  }
+
+  void ResetIdentity() {
+    for (size_t j = 0; j < 4; j++) {
+      for (size_t i = 0; i < 4; i++) {
+        m[j][i] = (i == j) ? 1.0 : 0.0;
+      }
+    }
+  }
+
+  void ResetRotationXRad(T angle) {
+    *this = { 
+      1.0, 0.0, 0.0, 0.0,
+      0.0, cos(angle), -sin(angle), 0.0,
+      0.0, sin(angle), cos(angle), 0.0,
+      0.0, 0.0, 0.0, 1.0
+    };
+  }
+
+  void ResetRotationYRad(T angle) {
+    *this = { 
+      cos(angle), 0.0, sin(angle), 0.0,
+      0.0, 1.0, 0.0, 0.0,
+      -sin(angle), 0.0, cos(angle), 0.0,
+      0.0, 0.0, 0.0, 1.0
+    };
+  }
+
+  void ResetRotationZRad(T angle) {
+    *this = { 
+       cos(angle), -sin(angle), 0.0, 0.0,
+       sin(angle), cos(angle), 0.0, 0.0,
+       0.0, 0.0, 1.0, 0.0,
+       0.0, 0.0, 0.0, 1.0 
+    };
+  }
+
+  static mat4<T> RotationXRad(T angle) {
+    mat4<T> m;
+    m.ResetRotationXRad(angle);
+    return m;
+  }
+
+  static mat4<T> RotationYRad(T angle) {
+    mat4<T> m;
+    m.ResetRotationYRad(angle);
+    return m;
+  }
+
+  static mat4<T> RotationZRad(T angle) {
+    mat4<T> m;
+    m.ResetRotationZRad(angle);
+    return m;
+  }
+
+  static mat4<T> RotationXDeg(T angle) {
+    mat4<T> m;
+    m.ResetRotationXRad(Deg2Rad(angle));
+    return m;
+  }
+
+  static mat4<T> RotationYDeg(T angle) {
+    mat4<T> m;
+    m.ResetRotationYRad(Deg2Rad(angle));
+    return m;
+  }
+
+  static mat4<T> RotationZDeg(T angle) {
+    mat4<T> m;
+    m.ResetRotationZRad(Deg2Rad(angle));
+    return m;
+  }
+
+   static mat4 scale(T scaleX, T scaleY, T scaleZ) {
+        return mat4(scaleX, 0, 0, 0,
+                    0, scaleY, 0, 0,
+                    0, 0, scaleZ, 0,
+                    0, 0, 0, 1);
+    } //its scale matrix
+
+  template <typename U> 
+  friend std::ostream& operator<<(std::ostream &os, const mat4<U>& a);
+
+  T m[4][4]{};
 };
+
+
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const mat4<T>& a) {
+  os << std::fixed << std::setprecision(5)
+     << "[  " << a.m[0][0] << ", " << a.m[0][1] << ", "
+              << a.m[0][2] << ", " << a.m[0][3] << "   \n"
+     << "   " << a.m[1][0] << ", " << a.m[1][1] << ", "
+              << a.m[1][2] << ", " << a.m[1][3] << "   \n"
+     << "   " << a.m[2][0] << ", " << a.m[2][1] << ", "
+              << a.m[2][2] << ", " << a.m[2][3] << "   \n"
+     << "   " << a.m[3][0] << ", " << a.m[3][1] << ", "
+              << a.m[3][2] << ", " << a.m[3][3] << "  ]\n";
+  return os;
+}
+};
+
+

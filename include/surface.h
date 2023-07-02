@@ -17,7 +17,7 @@ class Surface{
         //transform UserQueues(const UserQueues&) = delete;
         std::vector<std::unique_ptr<Transform>> transformations;
         std::unique_ptr<Material> material;
-
+        // TODO create mat 4 here which is 0 in the beggining and later is filled with transformations
     public:
         Surface(std::vector<std::unique_ptr<Transform>> transformations, std::unique_ptr<Material>material);
         Surface();

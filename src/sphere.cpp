@@ -67,8 +67,9 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
         if (texture != nullptr){
             intersection->setName(texture->getName());  
             auto d = intersection->getNormal();
-            auto u = 0.5 + (atan2(d.x(), d.y())/(2*3.1415926));
-            auto v = 0.5 - (asin(d.y())/ 3.1415926);
+            d.normalize();
+            auto u = 0.5 + ((atan2(d.x(), d.z())/(2*3.1415926)));
+            auto v = 0.5 - ((asin(d.y())/ 3.1415926));
 
             auto c1 = texture->getPixels(u, v);
             // cast it

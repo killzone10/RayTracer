@@ -27,6 +27,7 @@ std::optional<std::shared_ptr<Intersection>> Scene:: checkGlobalIntersections (R
     // scan for intersections !
     
     for (auto&s : surface){
+        // modify the ray with transformations ! 
         auto intersection = s->checkIntersection(ray, t_min, t_max);
         if (intersection.has_value()){
             intersections.push_back(*intersection);

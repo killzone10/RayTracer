@@ -25,7 +25,7 @@ class Camera {
         math::vec3 <double> horizontalVec{};
         math::vec3 <double> verticalVec{};
         math::vec3 <double>leftCornerPos{};
-        
+        math::mat4<double> m4{};
 
 
     public:

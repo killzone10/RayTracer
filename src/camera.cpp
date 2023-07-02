@@ -10,14 +10,27 @@ Camera::Camera(math::vec3<double> position, math::vec3<double> lookat, math::vec
                     ratio = horizontal / vertical; //width/ height
                     viewportHeight = 2.0;
                     double tangens = tan(angle*3.1415926/180);
-                    viewportWidth = ratio  * viewportHeight ;
-                    // viewportWidth = ratio  * viewportHeight * tangens; //add this later !
-                    math::vec3 <double> temp{viewportWidth,0,0};
-                    math::vec3 <double> temp1{0, viewportHeight, 0};
-                    horizontalVec = temp;
-                    verticalVec = temp1;
+                   // viewportWidth = ratio  * viewportHeight ;
+
+                    viewportWidth = ratio  * viewportHeight * tangens; //add this later !
+                    // math::vec3 <double> temp{viewportWidth,0,0};
+                    // math::vec3 <double> temp1{0, viewportHeight, 0};
+                    auto z = position - lookat;
+                    z.normalize();
+                    auto x = up.crossProduct(z);
+                    x.normalize();
+                    auto y = z.crossProduct(x);
+                    m4.setFromVectors(z,x,y, position);
+                    std::cout<<m4 <<std::endl;
+                    // horizontalVec = temp;
+                    // verticalVec = temp1;
+                    horizontalVec = x*viewportWidth;
+                    verticalVec = y*viewportHeight;
                     math::vec3 <double> focalVec{0,0, focal};
-                    leftCornerPos = position  - (verticalVec/2) - (horizontalVec/2) -  focalVec;
+                    //leftCornerPos = (position  - (verticalVec/2) - (horizontalVec/2) -  focalVec);
+                    leftCornerPos = (position  - (verticalVec/2) - (horizontalVec/2) -  z);
+                   // leftCornerPos = m4 * position;
+
                 };
             
 
