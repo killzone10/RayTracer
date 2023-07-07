@@ -26,8 +26,10 @@ class Surface{
 
         virtual std::optional<std::shared_ptr<Intersection>> checkIntersection(Ray *ray, double t_min, double t_max);
 
+        math::mat4<double> transformationMatrix{};
+        math::mat4<double> m4_inverse{};
 
-        Material * getMaterial();
+        Material * getMaterial();   
 
 };
 

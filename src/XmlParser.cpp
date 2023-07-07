@@ -479,6 +479,7 @@ void XmlParser::getSpheres(){
 
                 std::unique_ptr <Sphere> sphere = std::make_unique<Sphere>(std::move(transformations), std::move(material), radius, position);
                 Builder.addMeshes(std::move(sphere));
+                
             }
             sphereElement = sphereElement->NextSiblingElement("sphere");
 
@@ -638,7 +639,7 @@ void XmlParser::getMeshes(){
     translateElement->QueryDoubleAttribute("x", &translateX);
     translateElement->QueryDoubleAttribute("y", &translateY);
     translateElement->QueryDoubleAttribute("z", &translateZ);
-    math::vec3 vec{translateX, translateY, translateY};
+    math::vec3 vec{translateX, translateY, translateZ};
     std::unique_ptr<Translate> translate = std::make_unique<Translate>(vec);
     transformVector.push_back(std::move(translate));
     

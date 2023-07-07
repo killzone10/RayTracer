@@ -45,8 +45,15 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
 
         auto e1 = v1 - v0;
         auto e2 = v2 - v0;
- 
-        auto d = ray->getDirection() ; // 
+
+        //
+        // new things !
+        auto newOrigin = transformationMatrix * ray->getOrigin();
+        //newOrigin.normalize();
+        auto newDirection = transformationMatrix * ray->getDirection();
+        std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
+        //
+        auto d = newRay->getDirection() ; // 
         // first plug t into
         auto w2 = d.crossProduct(e2); // pvec
         auto a = e1.dotProduct(w2); // det
@@ -55,12 +62,12 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             continue;
         }
         auto f = 1.0 / a ; // inverse det
-        auto s = ray->getOrigin() - v0; // 
+        auto s = newRay->getOrigin() - v0; // 
         auto u = f * s.dotProduct(w2);
         if (u < 0.0 || u > 1.0)
             continue;
         auto w1 = s.crossProduct(e1);
-        auto v = f * ray->getDirection().dotProduct(w1);
+        auto v = f * newRay->getDirection().dotProduct(w1);
 
         if (v < 0.0 || u + v > 1.0)
             continue;
@@ -71,6 +78,8 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             closestIntersection = t;
             auto intersectionPoint = ray->getMovedPoint(t);
             auto normal  = normals[normalIndices[i]];
+            // transform normals
+            normal = m4_inverse * normal;
             tx0 = textures[textureIndices[i]];
             tx1 = textures[textureIndices[i+1]];
             tx2 = textures[textureIndices[i +2]];

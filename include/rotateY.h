@@ -7,4 +7,6 @@ class RotateY : public Transform {
         int theta{0};
     public:
         RotateY(int theta);
+        void transform(math::mat4<double> &transformationMatrix, bool inverse);
+
 };

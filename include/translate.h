@@ -7,4 +7,6 @@ class Translate : public Transform {
         math::vec3<double> translate{};
     public:
         Translate(math::vec3<double> translate);
+        void transform(math::mat4<double> &m,  bool inverse);
+
 };

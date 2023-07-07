@@ -4,6 +4,11 @@
 Surface::Surface(std::vector<std::unique_ptr<Transform>> transformations, std::unique_ptr<Material>material){
     this->transformations = std::move(transformations) ;
     this->material = std::move(material);
+    for (auto &t :this->transformations){
+        // check which transofrmation it is
+        t->transform(transformationMatrix, true); //inverse
+        t->transform(m4_inverse, false); // 
+    }
 }
 
 Surface::Surface(){};

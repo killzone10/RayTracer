@@ -7,4 +7,6 @@ class Scale : public Transform {
         math::vec3<double> scale{};
     public:
         Scale(math::vec3<double> scale);
+        void transform(math::mat4<double> &m, bool inverse);
+
 };

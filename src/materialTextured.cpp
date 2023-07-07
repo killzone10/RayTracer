@@ -30,9 +30,11 @@ math::vec3<double> materialTextured::getPixels(double u, double v) {
     unsigned x = static_cast<unsigned>(u * width);
     unsigned y = static_cast<unsigned>(v * height);
 
-    // Check if the coordinates are within the image boundaries
+    // Check if the coordinates are within the image boundaries texture repeat ! 
     if (x >= width || y >= height) {
-        throw std::runtime_error("width or height exceeds the limt");
+        x %= width;
+        y %= height;
+        
     }
 
     // Get the pixel color at the specified coordinates
@@ -40,6 +42,7 @@ math::vec3<double> materialTextured::getPixels(double u, double v) {
     unsigned char r = image[index];
     unsigned char g = image[index + 1];
     unsigned char b = image[index + 2];
+   
 
     double red = static_cast<double>(r) / 255;
     double green = static_cast<double>(g) / 255;

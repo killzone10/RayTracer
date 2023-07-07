@@ -18,9 +18,19 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
     // t2b⋅b+2tb⋅(A−C)+(A−C)⋅(A−C)−r2=0
 
     math::vec3<double> eye{}; 
-    eye = ray->getOrigin() - position; // origin of ray - center of sphere oc of ray
-    auto a = ray->getDirection().SqrLenght();
-    auto b = 2.0 * eye.dotProduct(ray->getDirection());
+    // modify a ray here // T
+
+     // origin of ray - center of sphere oc of ray
+
+    //transformation matrix
+    auto newOrigin = transformationMatrix * ray->getOrigin();
+    auto newDirection = transformationMatrix * ray->getDirection();
+
+    std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
+
+    eye = newRay->getOrigin() - position;
+    auto a = newRay->getDirection().SqrLenght();
+    auto b = 2.0 * eye.dotProduct(newRay->getDirection());
     auto c = eye.SqrLenght() - (radius*radius);
     auto delta = b*b - 4*a*c;
     if (delta >= 0){
@@ -39,6 +49,8 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
         }
         auto rayPosition = ray->getMovedPoint(root);
         math::vec3<double> normal = ((rayPosition - position)/ radius);
+        normal =  m4_inverse *normal;
+        normal.normalize(); 
         std::shared_ptr<Intersection> intersection = std::make_shared<Intersection>(rayPosition,normal, root);
         // direction of normal
         intersection->setFront(ray, normal);
