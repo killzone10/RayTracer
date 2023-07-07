@@ -14,7 +14,6 @@ How to build that:
     - cmake ..\CMakeLists.txt  
     - cmake --build . --target ALL_BUILD  --config Release
     
-on Windows the program is in build/Debug/ray_tracer.exe // on linux in the main directory
 
 # Execution
 How to execute:
