@@ -34,8 +34,10 @@ Experience	Windows Feature Experience Pack 1000.19041.1000.0
 # Samples
 
 ![Spheres](example3.png)
-![OBJ](example4.png)
 ![OBJ with refraction](example5.png)
 ![Textures](example6.png)
 ![Moving camera](example7.png)
 ![Spheres with textures](example8.png)
+
+# TO DO
+Object transformations correction (there are mistakes)
