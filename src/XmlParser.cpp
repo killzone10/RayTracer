@@ -651,7 +651,7 @@ void XmlParser::getMeshes(){
     scaleElement->QueryDoubleAttribute("x", &scaleX);
     scaleElement->QueryDoubleAttribute("y", &scaleY);
     scaleElement->QueryDoubleAttribute("z", &scaleZ);
-    math::vec3 vec{scaleX, scaleY, scaleY};
+    math::vec3 vec{scaleX, scaleY, scaleZ};
     std::unique_ptr<Scale> scale = std::make_unique<Scale>(vec);
     transformVector.push_back(std::move(scale));
     

@@ -20,15 +20,29 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
     math::vec3<double> eye{}; 
     // modify a ray here // T
 
-     // origin of ray - center of sphere oc of ray
-
+    
+    // std::cout<<transformationMatrix<<std::endl;
     //transformation matrix
     auto newOrigin = transformationMatrix * ray->getOrigin();
     auto newDirection = transformationMatrix * ray->getDirection();
 
-    std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
+    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
+    // std::cout<<"NEW direction "<<newDirection<<std::endl;
+    // std::cout<<"TRANSFORMATION "<<transformationMatrix<<std::endl;
 
+    std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
+    // std::cout<<"BASIC1 origin "<<ray->getOrigin()<<std::endl;
+    // std::cout<<"BASIC2 origin "<<newRay->getOrigin()<<std::endl;
+
+    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
+    // std::cout<<"NEW direction "<<newDirection<<std::endl;
+
+     // origin of ray - center of sphere oc of ray
     eye = newRay->getOrigin() - position;
+    // std::cout<<eye<<std::endl;
+    // std::cout<<position<<std::endl;
+        // std::cout<<radius<<std::endl;
+
     auto a = newRay->getDirection().SqrLenght();
     auto b = 2.0 * eye.dotProduct(newRay->getDirection());
     auto c = eye.SqrLenght() - (radius*radius);
@@ -42,16 +56,19 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
         //
         double root = ((-b  - delta )/(2*a));
         //
+
         if (root < t_min || t_max < root){
             root = ((-b  + delta )/(2*a));
             if (root < t_min || t_max < root)
                 return {};
         }
+        // std::cout<<"intersection"<<std::endl;
         auto rayPosition = ray->getMovedPoint(root);
-        math::vec3<double> normal = ((rayPosition - position)/ radius);
+        // auto rayPosition = newRay->getMovedPoint(root);
+        math::vec3<double> normal = ((rayPosition - position)/ radius); // NORMALIZE!!
         normal =  m4_inverse *normal;
-        normal.normalize(); 
-        std::shared_ptr<Intersection> intersection = std::make_shared<Intersection>(rayPosition,normal, root);
+        // normal.normalize(); 
+        std::shared_ptr<Intersection> intersection = std::make_shared<Intersection>(rayPosition, normal, root);
         // direction of normal
         intersection->setFront(ray, normal);
 

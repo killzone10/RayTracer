@@ -38,6 +38,17 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
     math::vec3<double> tx1;
     math::vec3<double> tx2;
     math::vec3<double> barycentric;
+     // new things !
+    auto newOrigin = transformationMatrix * ray->getOrigin();
+
+    auto newDirection = transformationMatrix * ray->getDirection();
+    // std::cout<<"BASIC origin "<<ray->getOrigin()<<std::endl;
+    // std::cout<<"NEW origin "<<newOrigin<<std::endl;
+    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
+    // std::cout<<"NEW direction "<<newDirection<<std::endl;
+    // std::cout<<"TRANSFORMATION "<<transformationMatrix<<std::endl;
+
+    std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
     for (int i = 0; i < vertexIndices.size(); i+=3){
         auto v0 = vertices[vertexIndices[i]];
         auto v1 = vertices[vertexIndices[i+1]];
@@ -47,11 +58,7 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
         auto e2 = v2 - v0;
 
         //
-        // new things !
-        auto newOrigin = transformationMatrix * ray->getOrigin();
-        //newOrigin.normalize();
-        auto newDirection = transformationMatrix * ray->getDirection();
-        std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
+       
         //
         auto d = newRay->getDirection() ; // 
         // first plug t into
@@ -78,7 +85,7 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
             closestIntersection = t;
             auto intersectionPoint = ray->getMovedPoint(t);
             auto normal  = normals[normalIndices[i]];
-            // transform normals
+            // transform normals TODO !!!
             normal = m4_inverse * normal;
             tx0 = textures[textureIndices[i]];
             tx1 = textures[textureIndices[i+1]];

@@ -4,6 +4,13 @@ project(ray_tracer)
 set(CMAKE_CXX_STANDARD 17)
 include(FetchContent)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+elseif(MSVC)
+    # For MSVC, you might want to use /O2 instead
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
+endif()
+
 FetchContent_Declare(tinyxml2
     GIT_REPOSITORY https://github.com/leethomason/tinyxml2
     GIT_TAG 9.0.0

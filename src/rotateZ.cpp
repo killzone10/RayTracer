@@ -10,8 +10,10 @@ void RotateZ::transform(math::mat4<double> &transformationMatrix, bool inverse){
     else{
         a.setRotationZ(math::Deg2Rad(theta));
     }
-        transformationMatrix =  a * transformationMatrix;
-        // transformationMatrix =   transformationMatrix * a;
+        // std::cout<<"ROTZ"<<a<<std::endl;
+
+        // transformationMatrix =  a * transformationMatrix;
+        transformationMatrix =   transformationMatrix * a;
 
 }
 

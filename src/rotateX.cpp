@@ -11,8 +11,9 @@ void RotateX::transform(math::mat4<double> &transformationMatrix, bool inverse){
     else{
         a.setRotationX(math::Deg2Rad(theta));
     }
-        transformationMatrix =  a * transformationMatrix;
-        // transformationMatrix =   transformationMatrix * a;
+    // std::cout<<"ROTX"<<a<<std::endl;
+        // transformationMatrix =  a * transformationMatrix;
+        transformationMatrix =   transformationMatrix * a;
 
 }
 

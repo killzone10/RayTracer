@@ -11,8 +11,10 @@ void RotateY::transform(math::mat4<double> &transformationMatrix, bool inverse){
     else{
         a.setRotationY(math::Deg2Rad(theta));
     }
-        transformationMatrix =  a * transformationMatrix;
-        // transformationMatrix =   transformationMatrix * a;
+        // std::cout<<"ROTY"<<a<<std::endl;
+
+        // transformationMatrix =  a * transformationMatrix;
+        transformationMatrix =   transformationMatrix * a;
 
 }
 

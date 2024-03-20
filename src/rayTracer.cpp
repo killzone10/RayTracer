@@ -43,7 +43,7 @@ void RayTracer:: render(){
             auto offsetWidth = double(j)/(image_height-1);
             std::unique_ptr<Ray> ray = c->getRayToPixel(offsetHight, offsetWidth) ;        
             math::vec3<double> pixel_color(offsetHight, offsetWidth, 0.25); // gotta have fun there
-
+            
             pixel_color = trace(ray.get(), c->getmaxBounces()); // and now we have to adjst this
 
             math::vec3<double> color = pixel_color.save_color();
@@ -88,7 +88,8 @@ math::vec3<double> RayTracer::trace (Ray  *r, int bounces){
     double t_max = 40000;
 
     math::vec3 <double> color (0.0, 0.0, 0.0);
-    auto intersection = scene->checkGlobalIntersections(r,t_min, t_max, intersections);
+    auto intersection = scene->checkGlobalIntersections(r, t_min, t_max, intersections); 
+    // TODO ray-->getmoved_point()
     if (intersection.has_value()){
         //return something
         auto intersectionValue = intersection.value();
