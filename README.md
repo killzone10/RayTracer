@@ -1,7 +1,7 @@
 
 # Ray Tracer
 
-This is RayTracer project done for University Vienna course "Foundation of Computer Graphics".
+This is RayTracer project done at University Vienna course "Foundation of Computer Graphics".
 The main idea was to parse XML, which contained the information about the picture and then cast rays to detect objects and save it to PNG file.
 
 What was done:
