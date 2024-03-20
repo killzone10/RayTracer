@@ -34,20 +34,41 @@ void RayTracer:: render(){
     const int image_height = c->getHeight();
     std::vector <unsigned char> colors;
 
-    // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     // int pngArray = [][];
-     for (int j = image_height-1; j >= 0; --j) {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+    //  for (int j = image_height-1; j >= 0; --j) {
+    //     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+    //       for (int i = 0; i < image_width; ++i) {
+    //         auto offsetHight = double(i)/(image_width-1);
+    //         auto offsetWidth = double(j)/(image_height-1);
+    //         std::unique_ptr<Ray> ray = c->getRayToPixel(offsetHight, offsetWidth) ;        
+    //         math::vec3<double> pixel_color(offsetHight, offsetWidth, 0.25); // gotta have fun there
+            
+    //         pixel_color = trace(ray.get(), c->getmaxBounces()); // and now we have to adjst this
+
+    //         math::vec3<double> color = pixel_color.save_color();
+            
+    //         push_back_once(colors, color);
+
+
+
+    //     }
+    // }
+    for (int j = 0; j <image_height; ++j) {
+        std::cerr << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
           for (int i = 0; i < image_width; ++i) {
             auto offsetHight = double(i)/(image_width-1);
             auto offsetWidth = double(j)/(image_height-1);
-            std::unique_ptr<Ray> ray = c->getRayToPixel(offsetHight, offsetWidth) ;        
+            // std::unique_ptr<Ray> ray = c->getRayToPixel(i , j) ;        
+            std::unique_ptr<Ray> ray = c->getRayToPixel(i , j) ;        
+
             math::vec3<double> pixel_color(offsetHight, offsetWidth, 0.25); // gotta have fun there
             
             pixel_color = trace(ray.get(), c->getmaxBounces()); // and now we have to adjst this
 
             math::vec3<double> color = pixel_color.save_color();
-            
+        
+
             push_back_once(colors, color);
 
 

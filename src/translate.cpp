@@ -10,7 +10,7 @@ void Translate::transform(math::mat4<double> &transformationMatrix, bool inverse
         a.translate(-translate);
     }
     else{
-        a.translate(translate);
+        // a.translate(translate);
         // transformationMatrix.translate(translate);// ignore for normals
         //
     }

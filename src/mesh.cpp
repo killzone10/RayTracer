@@ -38,15 +38,11 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
     math::vec3<double> tx1;
     math::vec3<double> tx2;
     math::vec3<double> barycentric;
-     // new things !
-    auto newOrigin = transformationMatrix * ray->getOrigin();
+    // transforming the Rays !!
+    auto newOrigin = transformationMatrix.multiply_point(ray->getOrigin());
 
     auto newDirection = transformationMatrix * ray->getDirection();
-    // std::cout<<"BASIC origin "<<ray->getOrigin()<<std::endl;
-    // std::cout<<"NEW origin "<<newOrigin<<std::endl;
-    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
-    // std::cout<<"NEW direction "<<newDirection<<std::endl;
-    // std::cout<<"TRANSFORMATION "<<transformationMatrix<<std::endl;
+
 
     std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
     for (int i = 0; i < vertexIndices.size(); i+=3){
@@ -83,15 +79,19 @@ std::optional<std::shared_ptr<Intersection>> Mesh::checkIntersection(Ray *ray, d
         if (t > t_min && t < closestIntersection){
             wasIntersection = true;
             closestIntersection = t;
-            auto intersectionPoint = ray->getMovedPoint(t);
+            // calculating the t for tne newRay
+            auto intersectionPoint = newRay->getMovedPoint(t);
             auto normal  = normals[normalIndices[i]];
             // transform normals TODO !!!
             normal = m4_inverse * normal;
+
             tx0 = textures[textureIndices[i]];
             tx1 = textures[textureIndices[i+1]];
             tx2 = textures[textureIndices[i +2]];
             barycentric = math::vec3<double>(1 - u - v, u, v);
             // auto normal  = normals[2];
+            // going back to original RAY !!
+            intersectionPoint = ray->getMovedPoint(t);
             intersection = std::make_shared<Intersection>(intersectionPoint, normal, t);
             //copied from the sphere
             intersection->setFront(ray, normal);

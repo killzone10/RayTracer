@@ -26,7 +26,10 @@ class Camera {
         math::vec3 <double> verticalVec{};
         math::vec3 <double>leftCornerPos{};
         math::mat4<double> m4{};
+        math::vec3<double>pixelCenter{};
 
+        math::vec3 <double>  pixel_delta_u{};  // Offset to pixel to the right
+        math::vec3 <double> pixel_delta_v{};  // Offset to pixel below
 
     public:
 
@@ -42,8 +45,10 @@ class Camera {
         int getHeight();
         int getmaxBounces();
 
-        std::unique_ptr<Ray> getRayToPixel(double offsetHight, double offsetWidth);
+        // std::unique_ptr<Ray> getRayToPixel(double offsetHight, double offsetWidth);
+        std::unique_ptr<Ray> getRayToPixel(unsigned int i, unsigned int j);
 
+        math::vec3<double> getPixelCenter();
 
 
 };

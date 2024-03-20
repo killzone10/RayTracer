@@ -21,27 +21,19 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
     // modify a ray here // T
 
     
-    // std::cout<<transformationMatrix<<std::endl;
-    //transformation matrix
-    auto newOrigin = transformationMatrix * ray->getOrigin();
+    // TRANSFORMING THE POINT AND DIRECTION SO WE DONT HAVE TO TRANSFORM THE OBJECTS !! WE TRANSFORM THE RAYS //
+    //transformation matrix was created in inverse, because it has to be from world to object space and in xml we have transformations in opposite direction !!//
+
+    auto newOrigin = transformationMatrix.multiply_point(ray->getOrigin());
     auto newDirection = transformationMatrix * ray->getDirection();
 
-    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
-    // std::cout<<"NEW direction "<<newDirection<<std::endl;
-    // std::cout<<"TRANSFORMATION "<<transformationMatrix<<std::endl;
-
+ 
     std::unique_ptr<Ray> newRay = std::make_unique<Ray>(newOrigin, newDirection);
-    // std::cout<<"BASIC1 origin "<<ray->getOrigin()<<std::endl;
-    // std::cout<<"BASIC2 origin "<<newRay->getOrigin()<<std::endl;
 
-    // std::cout<<"BASIC direction "<<ray->getDirection()<<std::endl;
-    // std::cout<<"NEW direction "<<newDirection<<std::endl;
 
      // origin of ray - center of sphere oc of ray
     eye = newRay->getOrigin() - position;
-    // std::cout<<eye<<std::endl;
-    // std::cout<<position<<std::endl;
-        // std::cout<<radius<<std::endl;
+
 
     auto a = newRay->getDirection().SqrLenght();
     auto b = 2.0 * eye.dotProduct(newRay->getDirection());
@@ -62,23 +54,21 @@ std::optional<std::shared_ptr<Intersection>> Sphere::checkIntersection(Ray *ray,
             if (root < t_min || t_max < root)
                 return {};
         }
-        // std::cout<<"intersection"<<std::endl;
-        auto rayPosition = ray->getMovedPoint(root);
-        // auto rayPosition = newRay->getMovedPoint(root);
+        // get the intersecction point on newRay 
+        auto rayPosition = newRay->getMovedPoint(root);
+
+        // calculate normals for this
+        auto outward_normal = ((rayPosition - position)/ radius);
+   
         math::vec3<double> normal = ((rayPosition - position)/ radius); // NORMALIZE!!
+        normal.normalize();
         normal =  m4_inverse *normal;
-        // normal.normalize(); 
+        // go back to original RAY 
+        rayPosition = ray->getMovedPoint(root);
         std::shared_ptr<Intersection> intersection = std::make_shared<Intersection>(rayPosition, normal, root);
         // direction of normal
         intersection->setFront(ray, normal);
 
-        // filling the interection class
-        // root cords
-        // intersection->setRoot(root);
-        // final position of ray
-        // intersection->setPoint(rayPosition);
-        // normals
-        // intersection->setNormal((rayPosition - position)/ radius);
 
         //material
         auto m_point = getMaterial();

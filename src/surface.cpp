@@ -7,11 +7,11 @@ Surface::Surface(std::vector<std::unique_ptr<Transform>> transformations, std::u
     unsigned int i {0};
     // for (auto &t :this->transformations){
     //     // check which transofrmation it is
-    //     t->transform(transformationMatrix, true); //inverse
-    //     std::cout  << i << ":" << transformationMatrix <<std::endl;
+    //     // t->transform(transformationMatrix, true); //inverse
+    //     // std::cout  << i << ":" << transformationMatrix <<std::endl;
     //     t->transform(m4_inverse, false); // 
     //     // std::cout  << i << "macierz_odwrotna" << m4_inverse <<std::endl;
-    //     i++;
+    //     // i++;
 
     // }
     for (auto it = this->transformations.rbegin(); it != this->transformations.rend(); ++it) {
@@ -22,7 +22,6 @@ Surface::Surface(std::vector<std::unique_ptr<Transform>> transformations, std::u
 
         t->transform(m4_inverse, false);
 
-        i++;
     }
 }
 

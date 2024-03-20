@@ -42,6 +42,6 @@ Experience	Windows Feature Experience Pack 1000.19041.1000.0
 ![Textures](example6.png)
 ![Moving camera](example7.png)
 ![Spheres with textures](example8.png)
-
+![Transforming Objects (implemented as translating rays)](example9.png)
 # TO DO
-Object transformations should be corrected (it was implemented with mistakes)
+Optimization + parallelization
