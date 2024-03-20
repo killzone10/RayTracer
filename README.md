@@ -4,9 +4,17 @@
 This is RayTracer project done for University Vienna course "Foundation of Computer Graphics".
 The main idea was to parse XML, which contained the information about the picture and then cast rays to detect objects and save it to PNG file.
 
+What was done:
+- camera
+- triangle intersection
+- sphere intersection
+- sphere textures
+- triangle textures
+- camera movement
+- object movement (transforming the rays, because its less expensive)
 
 # Build
-How to build that:
+How to build:
 
     - be in the main directory,
     - mkdir build
@@ -15,6 +23,7 @@ How to build that:
     - cmake --build . --target ALL_BUILD  --config Release
     
 on Windows the program is in build/Debug/ray_tracer.exe // on linux in the main directory
+Paths should work if not check the /scenes file.
 
 # Execution
 How to execute:
